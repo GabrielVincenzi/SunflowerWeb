@@ -26,18 +26,18 @@ html {
     --mono: monospace;
 
     /* Scala Tipografica Fluida Centralizzata */
-    --fs-massive: clamp(10rem, 14vw, 16rem);
-    --fs-h1: clamp(8rem, 12vw, 14rem);
+    --fs-massive: clamp(10rem, 14vw, 14rem);
+    --fs-h1: clamp(6rem, 12vw, 12rem);
     /* Titoli Principali / Hero / Zoom (H2 * 1.618) */
-    --fs-h2: clamp(8rem, 10vw, 10rem);
+    --fs-h2: clamp(4rem, 10vw, 8rem);
     /* Titoli di Sezione / Stats / CTA (H3 * 1.618) */
-    --fs-h3: clamp(4rem, 7.2vw, 7rem);
+    --fs-h3: clamp(2rem, 7.2vw, 6rem);
     /* Sotto-titoli Grandi / Recensioni (H4 * 1.618) */
-    --fs-h4: clamp(1.6rem, 3vw, 2.4rem);
+    --fs-h4: clamp(1.2rem, 3vw, 2rem);
     /* Domande FAQ, Titoli Schede (Body * 1.618) */
-    --fs-small: clamp(1rem, 1.2vw, 1.15rem);
+    --fs-small: clamp(1rem, 1.2vw, 1rem);
     /* Note, Didascalie, Date (Body / 1.618) */
-    --fs-body: clamp(1.4rem, 2vw, 1.85rem);
+    --fs-body: clamp(1.2rem, 2vw, 1.2rem);
     /* Testo Base del Corpo (Riferimento di partenza) */
 
 
@@ -917,9 +917,13 @@ h4 {
 }
 
 .sf-howitworks-title {
-    display: block;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    max-width: 950px;
+    margin-bottom: 96px;
+    display: flex;
+    flex-wrap: wrap;
     margin-top: 1rem;
-    margin-bottom: 4.5rem;
 }
 
 .sf-howitworks-grid {
