@@ -100,7 +100,7 @@ export default function Manifesto() {
         const mm = gsap.matchMedia();
 
         mm.add("(min-width: 768px)", () => {
-            const panels = gsap.utils.toArray < HTMLElement > (".sf-panel");
+            const panels = gsap.utils.toArray('.sf-panel');
 
             const tl = gsap.timeline({
                 scrollTrigger: {
