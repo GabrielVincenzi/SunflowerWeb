@@ -11,7 +11,7 @@
     background: var(--bg);
 }
 
-/* Barra di progresso fissa in alto */
+/* Progress bar used by the desktop ScrollTrigger animation */
 .sf-progress-track {
     position: fixed;
     top: 0;
@@ -29,7 +29,7 @@
     box-shadow: 0 0 12px rgba(252, 211, 77, 0.55);
 }
 
-/* Badge del brand fisso */
+/* Brand badge */
 .sf-brand-badge {
     position: fixed;
     top: 1.8rem;
@@ -43,7 +43,7 @@
     opacity: 0.9;
 }
 
-/* Singolo pannello: assoluto, sovrapposto, gestito da GSAP opacity/transform */
+/* Desktop: panels are stacked on top of each other and controlled by GSAP */
 .sf-panel {
     position: absolute;
     inset: 0;
@@ -63,7 +63,7 @@
     flex-direction: row-reverse;
 }
 
-/* Colonna immagine */
+/* Image column */
 .sf-image-wrap {
     position: relative;
     flex: 0 0 42%;
@@ -79,18 +79,20 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(252, 211, 77, 0.18) 0%, rgba(12, 11, 8, 0) 60%);
+    background: radial-gradient(circle at 30% 20%,
+            rgba(252, 211, 77, 0.18) 0%,
+            rgba(12, 11, 8, 0) 60%);
     pointer-events: none;
 }
 
 .sf-image-wrap img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
-/* Colonna testo */
+/* Text column */
 .sf-text-wrap {
     flex: 0 0 42%;
     max-width: 640px;
@@ -101,23 +103,23 @@
 }
 
 .sf-text-wrap p {
+    max-width: 46ch;
     font-family: var(--body);
     font-size: var(--fs-body);
     line-height: 1.5;
     color: var(--ink-dim);
-    max-width: 46ch;
 }
 
 .sf-text-wrap p+p {
     margin-top: 1rem;
 }
 
-/* Elemento base animato singolarmente da GSAP (title, paragraphs, points) */
+/* Elements animated individually by GSAP */
 .sf-animate-text {
     will-change: transform, opacity;
 }
 
-/* Layout "crisis": punti elenco con label + testo */
+/* Crisis layout */
 .sf-crisis-point {
     display: flex;
     flex-direction: column;
@@ -141,8 +143,8 @@
 .sf-crisis-point span {
     font-family: var(--body);
     font-size: var(--fs-small);
-    color: var(--ink-dim);
     line-height: 1.5;
+    color: var(--ink-dim);
 }
 
 .sf-crisis-conclusion {
@@ -153,43 +155,203 @@
     color: var(--gold);
 }
 
-/* Reverse layout: allinea il blocco testo a destra visivamente */
+/* Reverse layout: keep text readable on both desktop layouts */
 .sf-layout-reverse .sf-text-wrap {
     text-align: left;
 }
 
-/* Responsive: sotto una certa soglia, panel diventa verticale (niente pin scroll-jack su mobile è consigliato comunque) */
-@media (max-width: 900px) {
+/* ==========================================================================
+   MOBILE: NORMAL DOCUMENT FLOW
+   ========================================================================== */
+
+@media (max-width: 767px) {
+
+    /*
+     * The desktop ScrollTrigger pins this container and makes it exactly
+     * one viewport high. That must be disabled on mobile.
+     */
+    .sf-container {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+        padding: 0;
+    }
+
+    /*
+     * The progress bar belongs to the desktop animation. Since the mobile
+     * version is a normal scrolling page, hide it.
+     */
+    .sf-progress-track {
+        display: none;
+    }
+
+    /*
+     * Each panel becomes a normal block in the document:
+     *
+     * image
+     * text
+     * image
+     * text
+     */
+    .sf-panel,
+    .sf-layout-standard,
+    .sf-layout-reverse {
+        position: relative;
+        inset: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        width: 100%;
+        height: auto;
+        min-height: 0;
+        gap: 0;
+        padding: 0 1.25rem 4.5rem;
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+        will-change: auto;
+    }
+
+    /*
+     * Responsive image size.
+     * At 390px viewport width, this is approximately 292px high.
+     */
+    .sf-image-wrap {
+        flex: none;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        max-width: none;
+        border-radius: 16px;
+        transform: none;
+        opacity: 1;
+        order: 1;
+        will-change: auto;
+    }
+
+    .sf-image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .sf-text-wrap {
+        flex: none;
+        width: 100%;
+        max-width: none;
+        padding-top: 1.5rem;
+        order: 2;
+    }
+
+    .sf-text-wrap h3 {
+        margin-bottom: 1rem;
+        font-size: clamp(1.8rem, 8vw, 2.5rem);
+        line-height: 1.05;
+    }
+
+    .sf-text-wrap p {
+        max-width: none;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /*
+     * GSAP normally controls these values on desktop. On mobile they must
+     * always be visible and in their natural position.
+     */
+    .sf-animate-text {
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+    }
+
+    .sf-crisis-point {
+        padding: 1rem 0;
+    }
+
+    .sf-crisis-conclusion {
+        margin-top: 1.25rem;
+        font-size: 1.05rem;
+        line-height: 1.5;
+    }
+
+    .sf-hero-manifesto {
+        min-height: 100svh;
+        padding: 6rem 1.25rem 3rem;
+    }
+
+    .sf-hero-manifesto-inner {
+        width: 100%;
+        max-width: none;
+    }
+
+    .sf-hero-manifesto-inner h2 {
+        font-size: clamp(2.5rem, 12vw, 4rem);
+        line-height: 0.98;
+    }
+
+    .sf-hero-manifesto-inner .sf-sub {
+        max-width: 34rem;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .sf-about-nav {
+        top: 1rem;
+        padding: 0 1rem;
+    }
+
+    .sf-about-nav-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .sf-about-nav-toggle {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .sf-about-nav-overlay .sf-overlay-nav a {
+        font-size: 2rem;
+    }
+}
+
+/* ==========================================================================
+   TABLET / SMALL LAPTOP ADJUSTMENTS
+   ========================================================================== */
+
+@media (min-width: 768px) and (max-width: 1100px) {
     .sf-panel {
-        flex-direction: column !important;
-        padding: 0 1.6rem;
-        gap: 2rem;
+        gap: 2.5rem;
+        padding: 0 3rem;
     }
 
     .sf-image-wrap,
     .sf-text-wrap {
-        flex: none;
-        width: 100%;
-        max-width: 100%;
+        flex-basis: 44%;
     }
 
-    .sf-text-wrap h2 {
-        font-size: var(--fs-h4);
+    .sf-text-wrap h3 {
+        font-size: clamp(2rem, 4vw, 3.2rem);
     }
 }
 
-/* --- Manifesto Hero: variante centrata --- */
+/* ==========================================================================
+   MANIFESTO HERO
+   ========================================================================== */
+
 .sf-hero-manifesto {
     justify-content: center;
     text-align: center;
 }
 
 .sf-hero-manifesto-inner {
-    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    max-width: 1200px;
 }
 
 .sf-hero-manifesto-inner h1 {
@@ -197,23 +359,27 @@
 }
 
 .sf-hero-manifesto-inner .sf-sub {
-    margin-left: auto;
     margin-right: auto;
+    margin-left: auto;
 }
 
 .sf-hero-manifesto-inner .sf-hero-actions {
     justify-content: center;
 }
 
+/* ==========================================================================
+   ABOUT NAVIGATION
+   ========================================================================== */
+
 .sf-about-nav {
     position: fixed;
     top: 2rem;
-    left: 0;
     right: 0;
+    left: 0;
     z-index: 100;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     padding: 0 2rem;
     pointer-events: none;
 }
@@ -224,25 +390,25 @@
 }
 
 .sf-about-nav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 44px;
     height: 44px;
     border-radius: 50%;
     background: var(--ink);
     color: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .sf-about-nav-toggle {
-    font-family: var(--body);
-    font-weight: 700;
-    font-size: 0.85rem;
     padding: 0.7rem 1.4rem;
-    border-radius: 100px;
     border: none;
+    border-radius: 100px;
     background: var(--ink);
     color: var(--bg);
+    font-family: var(--body);
+    font-size: 0.85rem;
+    font-weight: 700;
     cursor: pointer;
 }
 
@@ -250,20 +416,20 @@
     position: fixed;
     inset: 0;
     z-index: 101;
-    background: var(--ink);
-    color: var(--bg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    background: var(--ink);
+    color: var(--bg);
 }
 
 .sf-about-nav-overlay .sf-overlay-nav a {
+    color: var(--bg);
     font-family: var(--display);
     font-size: 2.5rem;
     font-weight: 600;
-    color: var(--bg);
     letter-spacing: -0.02em;
 }
 

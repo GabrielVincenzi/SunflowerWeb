@@ -97,44 +97,124 @@ export default function Manifesto() {
     ];
 
     useGSAP(() => {
-        const panels = gsap.utils.toArray('.sf-panel');
+        const mm = gsap.matchMedia();
 
-        // Creazione della timeline master collegata allo ScrollTrigger
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: containerRef.current,
-                start: 'top top',
-                end: `+=${panels.length * 100}%`, // Durata dello scroll in base al numero di pannelli
-                pin: true,
-                scrub: 1, // L'animazione segue fedelmente lo scroll
-                anticipatePin: 1,
-            }
+        mm.add("(min-width: 768px)", () => {
+            const panels = gsap.utils.toArray < HTMLElement > (".sf-panel");
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: "top top",
+                    end: `+=${panels.length * 100}%`,
+                    pin: true,
+                    scrub: 1,
+                    anticipatePin: 1,
+                },
+            });
+
+            panels.forEach((panel, i) => {
+                const imgContainer = panel.querySelector(".sf-image-wrap");
+                const textElements = panel.querySelectorAll(".sf-animate-text");
+
+                if (i > 0) {
+                    gsap.set(panel, {
+                        opacity: 0,
+                        pointerEvents: "none",
+                    });
+
+                    gsap.set(imgContainer, {
+                        xPercent: i % 2 === 0 ? -30 : 30,
+                        scale: 0.85,
+                    });
+
+                    gsap.set(textElements, {
+                        y: 40,
+                        opacity: 0,
+                    });
+                }
+
+                if (i > 0) {
+                    tl.to(
+                        panel,
+                        {
+                            opacity: 1,
+                            pointerEvents: "all",
+                            duration: 0.5,
+                        },
+                        i - 0.2
+                    )
+                        .to(
+                            imgContainer,
+                            {
+                                xPercent: 0,
+                                scale: 1,
+                                duration: 0.6,
+                                ease: "power2.out",
+                            },
+                            i - 0.2
+                        )
+                        .to(
+                            textElements,
+                            {
+                                y: 0,
+                                opacity: 1,
+                                stagger: 0.1,
+                                duration: 0.5,
+                            },
+                            i - 0.1
+                        );
+                }
+
+                if (i < panels.length - 1) {
+                    tl.to(
+                        imgContainer,
+                        {
+                            xPercent: i % 2 === 0 ? 30 : -30,
+                            scale: 0.85,
+                            opacity: 0,
+                            duration: 0.6,
+                            ease: "power2.in",
+                        },
+                        i + 0.6
+                    )
+                        .to(
+                            textElements,
+                            {
+                                y: -40,
+                                opacity: 0,
+                                stagger: 0.05,
+                                duration: 0.5,
+                            },
+                            i + 0.6
+                        )
+                        .to(
+                            panel,
+                            {
+                                opacity: 0,
+                                pointerEvents: "none",
+                                duration: 0.4,
+                            },
+                            i + 0.8
+                        );
+                }
+            });
+
+            tl.fromTo(
+                ".sf-progress-bar",
+                { width: "0%" },
+                {
+                    width: "100%",
+                    ease: "none",
+                    duration: tl.duration(),
+                },
+                0
+            );
         });
 
-        panels.forEach((panel, i) => {
-            const imgContainer = panel.querySelector('.sf-image-wrap');
-            const textElements = panel.querySelectorAll('.sf-animate-text');
-            // Stato iniziale per i pannelli successivi al primo (nascosti)
-            if (i > 0) {
-                gsap.set(panel, { opacity: 0, pointerEvents: 'none' });
-                gsap.set(imgContainer, { xPercent: i % 2 === 0 ? -30 : 30, scale: 0.85 });
-                gsap.set(textElements, { y: 40, opacity: 0 });
-            }
-            // Animazione di ENTRATA del pannello (dal secondo in poi)
-            if (i > 0) {
-                tl.to(panel, { opacity: 1, pointerEvents: 'all', duration: 0.5 }, i - 0.2).to(imgContainer, { xPercent: 0, scale: 1, duration: 0.6, ease: 'power2.out' }, i - 0.2).to(textElements, { y: 0, opacity: 1, stagger: 0.1, duration: 0.5 }, i - 0.1);
-            }
-            // Animazione di USCITA del pannello (per tutti tranne l'ultimo)
-            if (i < panels.length - 1) { tl.to(imgContainer, { xPercent: i % 2 === 0 ? 30 : -30, scale: 0.85, opacity: 0, duration: 0.6, ease: 'power2.in' }, i + 0.6).to(textElements, { y: -40, opacity: 0, stagger: 0.05, duration: 0.5 }, i + 0.6).to(panel, { opacity: 0, pointerEvents: 'none', duration: 0.4 }, i + 0.8); }
-        });
-
-        // Animazione della barra di progresso in alto
-        tl.fromTo(
-            '.sf-progress-bar',
-            { width: '0%' },
-            { width: '100%', ease: 'none', duration: tl.duration() },
-            0
-        );
+        return () => {
+            mm.revert();
+        };
     }, { scope: containerRef });
 
     return (
@@ -173,9 +253,6 @@ export default function Manifesto() {
                 <div className="sf-progress-track">
                     <div className="sf-progress-bar" />
                 </div>
-
-                {/* Badge del brand fisso */}
-                <div className="sf-brand-badge">Sunflower</div>
 
                 {/* Contenitore principale bloccato da GSAP */}
                 {panelsData.map((panel, index) => {
